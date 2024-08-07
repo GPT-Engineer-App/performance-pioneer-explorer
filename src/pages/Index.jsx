@@ -2,16 +2,30 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Paw, Info, Award, Image as ImageIcon, Heart, ChevronLeft, ChevronRight } from "lucide-react";
+import { Paw, Info, Award, Image as ImageIcon, Heart, ChevronLeft, ChevronRight, Star } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Progress } from "@/components/ui/progress";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const catBreeds = [
-  { name: "Siamese", image: "https://upload.wikimedia.org/wikipedia/commons/2/25/Siam_lilacpoint.jpg", description: "Known for their distinctive color points and blue almond-shaped eyes." },
-  { name: "Persian", image: "https://upload.wikimedia.org/wikipedia/commons/1/15/White_Persian_Cat.jpg", description: "Characterized by their long, fluffy coat and round face." },
-  { name: "Maine Coon", image: "https://upload.wikimedia.org/wikipedia/commons/5/5f/Maine_Coon_cat_by_Tomitheos.JPG", description: "One of the largest domesticated cat breeds, known for their intelligence and playful personality." },
-  { name: "Bengal", image: "https://upload.wikimedia.org/wikipedia/commons/b/ba/Paintedcats_Red_Star_standing.jpg", description: "Developed to look like exotic jungle cats such as leopards and ocelots." },
-  { name: "Scottish Fold", image: "https://upload.wikimedia.org/wikipedia/commons/5/5d/Adult_Scottish_Fold.jpg", description: "Characterized by a gene mutation that affects cartilage throughout the body, giving the ears a folded appearance." },
+  { name: "Siamese", image: "https://upload.wikimedia.org/wikipedia/commons/2/25/Siam_lilacpoint.jpg", description: "Known for their distinctive color points and blue almond-shaped eyes.", personality: "Vocal, intelligent, and affectionate", origin: "Thailand" },
+  { name: "Persian", image: "https://upload.wikimedia.org/wikipedia/commons/1/15/White_Persian_Cat.jpg", description: "Characterized by their long, fluffy coat and round face.", personality: "Gentle, quiet, and docile", origin: "Iran (Persia)" },
+  { name: "Maine Coon", image: "https://upload.wikimedia.org/wikipedia/commons/5/5f/Maine_Coon_cat_by_Tomitheos.JPG", description: "One of the largest domesticated cat breeds, known for their intelligence and playful personality.", personality: "Friendly, intelligent, and gentle", origin: "United States" },
+  { name: "Bengal", image: "https://upload.wikimedia.org/wikipedia/commons/b/ba/Paintedcats_Red_Star_standing.jpg", description: "Developed to look like exotic jungle cats such as leopards and ocelots.", personality: "Active, playful, and curious", origin: "United States" },
+  { name: "Scottish Fold", image: "https://upload.wikimedia.org/wikipedia/commons/5/5d/Adult_Scottish_Fold.jpg", description: "Characterized by a gene mutation that affects cartilage throughout the body, giving the ears a folded appearance.", personality: "Sweet-tempered, adaptable, and intelligent", origin: "Scotland" },
+];
+
+const catFacts = [
+  { fact: "Cats have been domesticated for over 4,000 years.", icon: "🏛️" },
+  { fact: "An adult cat has 30 teeth.", icon: "🦷" },
+  { fact: "Cats can jump up to six times their length.", icon: "🦘" },
+  { fact: "A group of cats is called a \"clowder\".", icon: "👥" },
+  { fact: "Cats spend 70% of their lives sleeping.", icon: "😴" },
+  { fact: "Cats have over 20 vocalizations, including the meow.", icon: "🗣️" },
+  { fact: "A cat's sense of smell is 14 times stronger than a human's.", icon: "👃" },
+  { fact: "Cats have a third eyelid called the 'haw' to protect their eyes.", icon: "👁️" },
 ];
 
 const Index = () => {
@@ -71,11 +85,13 @@ const Index = () => {
     <div className="min-h-screen bg-gradient-to-b from-blue-100 to-purple-100">
       <nav className="bg-white shadow-md p-4 sticky top-0 z-50">
         <ul className="flex justify-center space-x-6">
-          <li><a href="#hero" className="text-blue-600 hover:text-blue-800 transition-colors">Home</a></li>
-          <li><a href="#facts" className="text-blue-600 hover:text-blue-800 transition-colors">Facts</a></li>
-          <li><a href="#breeds" className="text-blue-600 hover:text-blue-800 transition-colors">Breeds</a></li>
-          <li><a href="#gallery" className="text-blue-600 hover:text-blue-800 transition-colors">Gallery</a></li>
-          <li><a href="#quiz" className="text-blue-600 hover:text-blue-800 transition-colors">Quiz</a></li>
+          {["Home", "Facts", "Breeds", "Gallery", "Quiz"].map((item) => (
+            <motion.li key={item} whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
+              <a href={`#${item.toLowerCase()}`} className="text-blue-600 hover:text-blue-800 transition-colors">
+                {item}
+              </a>
+            </motion.li>
+          ))}
         </ul>
       </nav>
 
@@ -129,6 +145,15 @@ const Index = () => {
         <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 w-1/3">
           <Progress value={progress} className="h-1 bg-white/30" indicatorClassName="bg-white" />
         </div>
+        <motion.div 
+          className="absolute bottom-16 left-1/2 transform -translate-x-1/2 bg-white/80 text-black p-4 rounded-lg shadow-lg"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+        >
+          <h2 className="text-2xl font-bold mb-2">{catBreeds[currentBreedIndex].name}</h2>
+          <p className="text-sm">{catBreeds[currentBreedIndex].description}</p>
+        </motion.div>
       </section>
 
       <div className="max-w-6xl mx-auto px-4 py-12">
@@ -145,26 +170,29 @@ const Index = () => {
                 <CardDescription>Interesting information about our furry friends</CardDescription>
               </CardHeader>
               <CardContent>
-                <ul className="space-y-4">
-                  {[
-                    "Cats have been domesticated for over 4,000 years.",
-                    "An adult cat has 30 teeth.",
-                    "Cats can jump up to six times their length.",
-                    "A group of cats is called a \"clowder\".",
-                    "Cats spend 70% of their lives sleeping."
-                  ].map((fact, index) => (
-                    <motion.li 
-                      key={index}
-                      className="flex items-center space-x-2"
-                      initial={{ opacity: 0, x: -50 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.5, delay: index * 0.1 }}
-                    >
-                      <Paw className="h-5 w-5 text-blue-500" />
-                      <span>{fact}</span>
-                    </motion.li>
-                  ))}
-                </ul>
+                <Carousel className="w-full max-w-xs mx-auto">
+                  <CarouselContent>
+                    {catFacts.map((fact, index) => (
+                      <CarouselItem key={index}>
+                        <Card className="bg-gradient-to-br from-blue-100 to-purple-100">
+                          <CardContent className="flex flex-col items-center justify-center p-6 h-48">
+                            <motion.div
+                              className="text-4xl mb-4"
+                              initial={{ scale: 0 }}
+                              animate={{ scale: 1 }}
+                              transition={{ type: "spring", stiffness: 260, damping: 20 }}
+                            >
+                              {fact.icon}
+                            </motion.div>
+                            <p className="text-center text-sm">{fact.fact}</p>
+                          </CardContent>
+                        </Card>
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+                  <CarouselPrevious />
+                  <CarouselNext />
+                </Carousel>
               </CardContent>
             </Card>
           </TabsContent>
@@ -175,7 +203,7 @@ const Index = () => {
                 <CardDescription>Some well-known feline varieties</CardDescription>
               </CardHeader>
               <CardContent>
-                <ul className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {catBreeds.map((breed, index) => (
                     <motion.li 
                       key={breed.name} 
@@ -185,9 +213,14 @@ const Index = () => {
                       transition={{ duration: 0.5, delay: index * 0.1 }}
                       whileHover={{ scale: 1.05 }}
                     >
-                      <img src={breed.image} alt={breed.name} className="w-40 h-40 rounded-full object-cover shadow-md" />
+                      <Avatar className="w-40 h-40">
+                        <AvatarImage src={breed.image} alt={breed.name} />
+                        <AvatarFallback>{breed.name[0]}</AvatarFallback>
+                      </Avatar>
                       <span className="text-xl font-semibold mt-4">{breed.name}</span>
+                      <Badge variant="secondary">{breed.origin}</Badge>
                       <p className="text-sm text-gray-600 text-center">{breed.description}</p>
+                      <p className="text-sm font-medium text-blue-600">{breed.personality}</p>
                       <Button 
                         variant="outline" 
                         size="sm"
@@ -218,11 +251,20 @@ const Index = () => {
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ duration: 0.5, delay: index * 0.1 }}
+                      whileHover={{ scale: 1.05 }}
                     >
                       <img src={breed.image} alt={breed.name} className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-110" />
-                      <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent flex flex-col items-center justify-end p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                         <span className="text-white text-lg font-semibold">{breed.name}</span>
+                        <span className="text-white text-sm">{breed.origin}</span>
                       </div>
+                      <motion.div 
+                        className="absolute top-2 right-2 bg-white rounded-full p-1"
+                        whileHover={{ scale: 1.2 }}
+                        whileTap={{ scale: 0.9 }}
+                      >
+                        <Star className={`h-5 w-5 ${likedBreeds[breed.name] ? 'text-yellow-500 fill-yellow-500' : 'text-gray-300'}`} onClick={() => toggleLike(breed.name)} />
+                      </motion.div>
                     </motion.div>
                   ))}
                 </div>
